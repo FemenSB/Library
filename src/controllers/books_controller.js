@@ -1,66 +1,55 @@
 const booksModel = require('../models/books_model');
 
-function postBook(req, res) {
-  booksModel.lastId++;
+function httpPostBook(req, res) {
   let newBook = {
-    id: booksModel.lastId,
     title: req.body.title,
     author: req.body.author
   };
-  booksModel.books.push(newBook);
-  res.send(newBook);
+  res.send(booksModel.postBook(newBook));
 }
 
-function putBook(req, res) {
-  let i;
+function httpPutBook(req, res) {
   let requestedId = parseInt(req.params.id);
-  for(i = 0; i < booksModel.books.length; i++) { // Search through all books
-    if(booksModel.books[i].id == requestedId) { // If the requested id is found
-      break; // Exit loop
-    }
-  }
-  if(i == booksModel.books.length) { // If the book was not found
-    res.status(404).send('Id not found!');
-    return; // Exit function
+  let book = booksModel.getBook(requestedId); // Ask the model for the specified id
+
+  if(book !== undefined) { // If the book was found, edit it
+    book.title = req.body.title;
+    book.author = req.body.author;
+    res.send(book); // Send as a status 200 response the edited book
+    return;
   }
 
-  booksModel.books[i].title = req.body.title;
-  booksModel.books[i].author = req.body.author;
+  res.status(404).send('Id not found!'); // If execution didn't stop, the book wasn't found
 
-  res.send(booksModel.books[i]);
 }
 
-function deleteBook(req, res) {
-  let requestedId = parseInt(req.params.id);
-  for(let i = 0; i < booksModel.books.length; i++) { // Search through all books
-    if(booksModel.books[i].id == requestedId) { // If the requested id is found
-      res.send(booksModel.books[i]);
-      booksModel.books.splice(i, 1);
-      return; // End function
-    }
+function httpDeleteBook(req, res) {
+  let requestedId = parseInt(req.params.id); // Parse the requested id
+  if(booksModel.deleteBook(requestedId) == true) {
+    res.status(200).send('Book deleted!');
+    return;
   }
   res.status(404).send('Id not found!'); // If function execution didn't stop, the book was not found
 }
 
-function getAllBooks(req, res) { // No id specified
-  res.send(booksModel.books); // Send all books registered
+function httpGetAllBooks(req, res) { // No id specified
+  res.send(booksModel.getAllBooks()); // Send all books registered
 }
 
-function getBookById(req, res) { // Specific id requested
-  let requestedId = parseInt(req.params.id);
-  for(let i = 0; i < booksModel.books.length; i++) { // Search through all books
-    if(booksModel.books[i].id == requestedId) { // If the requested id is found
-      res.send(booksModel.books[i]); // Send the respective book
-      return; // End function
-    }
+function httpGetBook(req, res) { // Specific id requested
+  let requestedId = parseInt(req.params.id); // Parse the requested id
+  let bookFound = booksModel.getBook(requestedId); // Ask the model for this id
+  if(typeof bookFound !== undefined) { // The model will return undefined if the book wasn't found
+    res.send(bookFound);
+    return;
   }
   res.status(404).send('Id not found!'); // If function execution didn't stop, the book was not found
 }
 
 module.exports = {
-  postBook,
-  putBook,
-  deleteBook,
-  getAllBooks,
-  getBookById
+  httpPostBook,
+  httpPutBook,
+  httpDeleteBook,
+  httpGetAllBooks,
+  httpGetBook
 };

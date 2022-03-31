@@ -6,10 +6,10 @@ const booksController = require('../controllers/books_controller.js');
 
 const booksRouter = express.Router();
 
-booksRouter.post('/', jsonParser, booksController.postBook);
-booksRouter.put('/:id', jsonParser, booksController.putBook);
-booksRouter.delete('/:id', booksController.deleteBook);
-booksRouter.get('/', booksController.getAllBooks);
-booksRouter.get('/:id', booksController.getBookById);
+booksRouter.post('/', jsonParser, booksController.httpPostBook);
+booksRouter.put('/:id', jsonParser, booksController.httpPutBook);
+booksRouter.delete('/:id', booksController.httpDeleteBook);
+booksRouter.get('/', booksController.httpGetAllBooks);
+booksRouter.get('/:id', booksController.httpGetBook);
 
 module.exports = booksRouter;
