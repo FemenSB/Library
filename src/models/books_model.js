@@ -3,10 +3,10 @@ var lastId = 0;
 
 function initializeBooks() {
   let startingBooks = [
-    {id: 0, title: 'The Case of Charles Dexter Ward', author: 'H. P. Lovecraft'},
-    {id: 1, title: 'Winds of Winter', author: 'George R. R. Martin'},
-    {id: 2, title: 'The Dawn of Yangchen', author: 'F. C. Yee'},
-    {id: 3, title: 'We', author: 'Yevgeny Zamyatin'}
+    {id: 0, title: 'The Case of Charles Dexter Ward', author: 'H. P. Lovecraft', releaseDate: new Date(-903560400000)},
+    {id: 1, title: 'Winds of Winter', author: 'George R. R. Martin', releaseDate: new Date(16736814000000)},
+    {id: 2, title: 'The Dawn of Yangchen', author: 'F. C. Yee', releaseDate: new Date(1658199600000)},
+    {id: 3, title: 'We', author: 'Yevgeny Zamyatin', releaseDate: new Date(-1425934800000)}
   ];
 
   startingBooks.forEach((book) => {

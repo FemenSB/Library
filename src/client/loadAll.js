@@ -6,7 +6,7 @@ async function loadBooks() {
 
   for(let i = 0; i < data.length; i++) {
     let aux = document.createElement('span');
-    aux.innerHTML = 'Book title: ' + data[i].title + '<br>Author name: ' + data[i].author + '<br>Book id: ' + data[i].id + '<br><br>';
+    aux.innerHTML = 'Book title: ' + data[i].title + '<br>Author name: ' + data[i].author + '<br>Book id: ' + data[i].id + '<br>Release date: ' + data[i].releaseDate + '<br><br>';
     document.body.appendChild(aux);
   }
 }
