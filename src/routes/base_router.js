@@ -4,13 +4,16 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const morgan = require('morgan');
 
 const booksRouter = require('./books_router');
-const baseRouter = express.Router();
+const baseRouter = express();
 
-baseRouter.use(cors({
+baseRouter.use(cors({ // Allow requests from any origin
     origin: '*'
 }));
+
+baseRouter.use(morgan('short')); // Log requests to console
 
 baseRouter.use('/api/books', booksRouter);
 

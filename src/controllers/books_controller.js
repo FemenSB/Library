@@ -71,7 +71,7 @@ function httpDeleteBook(req, res) {
 }
 
 function httpGetAllBooks(req, res) { // No id specified
-  res.send(booksModel.getAllBooks()); // Send all books registered
+  res.status(200).send(booksModel.getAllBooks()); // Send all books registered
 }
 
 function httpGetBook(req, res) { // Specific id requested
