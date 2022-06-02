@@ -7,7 +7,7 @@ function hasFields(obj, fields) { // Checks if the given object has the specifie
   return true;
 }
 
-function httpPostBook(req, res) {
+async function httpPostBook(req, res) {
 
   if(!hasFields(req.body, ['title', 'author', 'releaseDate'])) { // Check for missing fields in the request
     res.status(400).send({error: 'Data missing!'});
@@ -25,7 +25,7 @@ function httpPostBook(req, res) {
     author: req.body.author,
     releaseDate: releaseDate
   };
-  res.status(201).send(booksModel.postBook(newBook));
+  res.status(201).send(await booksModel.postBook(newBook));
 }
 
 async function httpPutBook(req, res) {

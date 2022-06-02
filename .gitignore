@@ -2,4 +2,4 @@
 node_modules/
 
 # Database access credentials
-src/dbCredentials.js
+src/util/dbCredentials.js
