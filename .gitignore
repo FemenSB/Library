@@ -1,1 +1,5 @@
+# Installed modules folder
 node_modules/
+
+# Database access credentials
+src/dbCredentials.js

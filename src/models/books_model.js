@@ -1,39 +1,35 @@
-const books = new Map();
-var lastId = 0;
+const books = require('./books_mongo');
 
-function initializeBooks() {
-  let startingBooks = [
-    {id: 0, title: 'The Case of Charles Dexter Ward', author: 'H. P. Lovecraft', releaseDate: new Date(-903560400000)},
-    {id: 1, title: 'Winds of Winter', author: 'George R. R. Martin', releaseDate: new Date(16736814000000)},
-    {id: 2, title: 'The Dawn of Yangchen', author: 'F. C. Yee', releaseDate: new Date(1658199600000)},
-    {id: 3, title: 'We', author: 'Yevgeny Zamyatin', releaseDate: new Date(-1425934800000)}
-  ];
+async function getLatestId() {
+  const latestBook = await books.findOne().sort('-id');
 
-  startingBooks.forEach((book) => {
-    books.set(book.id, book);
-  });
+  if(!latestBook) {
+    return 0;
+  }
 
-  lastId = startingBooks.length - 1;
+  return latestBook.id;
 }
 
-initializeBooks();
-
-function getAllBooks() {
-  return Array.from(books.values());
+async function getAllBooks() {
+  return await books.find({}, {'_id': 0, '__v': 0});
 }
 
-function getBook(bookId) {
-  return books.get(bookId);
+async function getBook(bookId) {
+  return await books.findOne({id: bookId}, {'_id': 0, '__v': 0});
 }
 
-function deleteBook(bookId) {
-  return books.delete(bookId);
+async function deleteBook(bookId) {
+  return await books.deleteOne({id: bookId});
 }
 
-function postBook(bookData) {
-  lastId++;
-  bookData.id = lastId;
-  books.set(lastId, bookData);
+async function postBook(bookData) {
+  bookData.id = await getLatestId() + 1;
+  books.create(bookData);
+  return bookData;
+}
+
+async function updateBook(bookData) {
+  await books.updateOne({id: bookData.id}, bookData);
   return bookData;
 }
 
@@ -41,5 +37,6 @@ module.exports = {
   getAllBooks,
   getBook,
   deleteBook,
-  postBook
+  postBook,
+  updateBook
 };

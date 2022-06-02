@@ -28,56 +28,61 @@ function httpPostBook(req, res) {
   res.status(201).send(booksModel.postBook(newBook));
 }
 
-function httpPutBook(req, res) {
+async function httpPutBook(req, res) {
   let requestedId = parseInt(req.params.id);
-  let book = booksModel.getBook(requestedId); // Ask the model for the specified id
+  let book = await booksModel.getBook(requestedId); // Get from the model an object with the current data for this id
 
-  if(book !== undefined) { // If the book was found, edit it
-
-    editableProps = ['author', 'title']; // Properties the client is allowed to edit directly
-
-    for(prop in req.body) { // For every property in the request
-      if(editableProps.includes(prop)) { // Check if it's one of the properties allowed for editing
-        if(req.body[prop] != '') { // Check if the input is not blank
-          book[prop] = req.body[prop]; // If the request has valid input, edit the property
-        }
-      }
-    }
-
-    if(req.body.releaseDate) { // Check if a new release date was set
-      releaseDate = new Date(req.body.releaseDate);
-      if(isNaN(releaseDate.valueOf())) { // Check if it is a valid date
-        res.status(400).send({error: 'Invalid release date!'});
-        return;
-      }
-      book.releaseDate = releaseDate; // If a date was received and it is valid, update the stored date
-    }
-
-    res.send(book); // Send as a status 200 response the edited book
+  if(book == null) { // If the specified id is not found, respond with 404 error
+    res.status(404).send({error: 'Id not found!'});
     return;
   }
 
-  res.status(404).send({error: 'Id not found!'}); // If execution didn't stop, the book wasn't found
+  // Update the object with the new data received in the request:
 
+  let editableProps = ['author', 'title']; // Properties the client is allowed to edit directly, with no specific validation
+
+  for(prop in req.body) { // For every property in the request
+    if(editableProps.includes(prop)) { // Check if it's one of the properties allowed for editing
+      if(req.body[prop] != '') { // Check if the input is not blank
+        book[prop] = req.body[prop]; // If the request has valid input, edit the property
+      }
+    }
+  }
+
+  // Properties that require more validation:
+
+  if(req.body.releaseDate) { // Check if a new release date was set
+    releaseDate = new Date(req.body.releaseDate);
+    if(isNaN(releaseDate.valueOf())) { // Check if it is a valid date
+      res.status(400).send({error: 'Invalid release date!'});
+      return;
+    }
+    book.releaseDate = releaseDate; // If a date was received and it is valid, update the stored date
+  }
+
+  // Send the updated object to be stored by the model
+  booksModel.updateBook(book);
+
+  res.send(book); // Send as a status 200 response the edited book
 }
 
-function httpDeleteBook(req, res) {
+async function httpDeleteBook(req, res) {
   let requestedId = parseInt(req.params.id); // Parse the requested id
-  if(booksModel.deleteBook(requestedId) == true) {
-    res.status(200).send('Book deleted!');
+  if(await booksModel.deleteBook(requestedId)) {
+    res.status(200).send({message: 'Book deleted!'});
     return;
   }
   res.status(404).send({error: 'Id not found!'}); // If function execution didn't stop, the book was not found
 }
 
-function httpGetAllBooks(req, res) { // No id specified
-  res.status(200).send(booksModel.getAllBooks()); // Send all books registered
+async function httpGetAllBooks(req, res) { // No id specified
+  res.status(200).send(await booksModel.getAllBooks()); // Send all books registered
 }
 
-function httpGetBook(req, res) { // Specific id requested
+async function httpGetBook(req, res) { // Specific id requested
   let requestedId = parseInt(req.params.id); // Parse the requested id
-  let bookFound = booksModel.getBook(requestedId); // Ask the model for this id
-  if(bookFound !== undefined) { // The model will return undefined if the book wasn't found
+  let bookFound = await booksModel.getBook(requestedId); // Ask the model for this id
+  if(bookFound !== null) { // The model will return null if the book wasn't found
     res.send(bookFound);
     return;
   }
