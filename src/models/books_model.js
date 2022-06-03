@@ -10,12 +10,14 @@ async function getLatestId() {
   if(!latestBook) {
     return 0;
   }
-  
+
   return latestBook.id;
 }
 
-async function getAllBooks() {
-  return await books.find({}, {'_id': 0, '__v': 0});
+async function getAllBooks(skip, limit) {
+  return await books.find({}, {'_id': 0, '__v': 0})
+    .skip(skip)
+    .limit(limit);
 }
 
 async function getBook(bookId) {
@@ -44,6 +46,5 @@ module.exports = {
   deleteBook,
   postBook,
   updateBook,
-  getLatestBook,
-  getLatestId
+  getLatestBook
 };

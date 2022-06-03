@@ -17,6 +17,11 @@ describe('Books API', () => {
       const response = await request(server).get('/api/books');
       expect(response.statusCode).toBe(200);
     });
+
+    test('Pagination limit', async () => {
+      const response = await request(server).get('/api/books/?limit=2');
+      expect(Object.keys(response.body).length).toBe(2);
+    });
   });
 
   describe('POST /api/books', () => {
@@ -82,7 +87,7 @@ describe('Books API', () => {
     const expected2 = {
       id: 1,
       title: 'The Case of Charles Dexter Ward',
-      author: 'H. P. Lovecrat'};
+      author: 'H. P. Lovecraft'};
 
     test('Book data can be edited', async () => {
       var putResponse = await request(server)

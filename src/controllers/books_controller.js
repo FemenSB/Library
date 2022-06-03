@@ -1,4 +1,5 @@
 const booksModel = require('../models/books_model');
+const getPagination = require('../util/pagination');
 
 function hasFields(obj, fields) { // Checks if the given object has the specified fields as properties
   for(let i = 0; i < fields.length; i++) {
@@ -76,7 +77,8 @@ async function httpDeleteBook(req, res) {
 }
 
 async function httpGetAllBooks(req, res) { // No id specified
-  res.status(200).send(await booksModel.getAllBooks()); // Send all books registered
+  const {skip, limit} = getPagination(req.query);
+  res.status(200).send(await booksModel.getAllBooks(skip, limit)); // Send all books registered
 }
 
 async function httpGetBook(req, res) { // Specific id requested
