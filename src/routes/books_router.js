@@ -10,6 +10,7 @@ booksRouter.post('/', booksController.httpPostBook);
 booksRouter.put('/:id', booksController.httpPutBook);
 booksRouter.delete('/:id', booksController.httpDeleteBook);
 booksRouter.get('/', booksController.httpGetAllBooks);
+booksRouter.get('/latest', booksController.httpGetLatestBook);
 booksRouter.get('/:id', booksController.httpGetBook);
 
 module.exports = booksRouter;

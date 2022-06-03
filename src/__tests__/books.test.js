@@ -100,7 +100,7 @@ describe('Books API', () => {
 
       putResponse = await request(server) // Change again the book data
         .put('/api/books/1')
-        .send({author: 'H. P. Lovecrat'})
+        .send({author: 'H. P. Lovecraft'})
         .expect(200);
 
       expect(putResponse.body).toMatchObject(expected2); // Check if the edited object was sent correctly
@@ -129,15 +129,23 @@ describe('Books API', () => {
     });
   });
 
-  describe('DELETE /api/books/9', () => {
+  describe('DELETE latest book', () => {
     test('Books can be deleted', async () => {
-      await request(server).delete('/api/books/0').expect(200); // Expect status 200 from delete request
-      await request(server).get('/api/books/0').expect(404); // Expect the book to not be found after deletion
+      const getLastBook = await request(server).get('/api/books/latest'); // Request the last book to get its id
+      const lastId = getLastBook.body.id; // If everything is correct, the deleted book will be the one inserted in the post method test
+      await request(server).delete(`/api/books/${lastId}`).expect(200); // Expect status 200 from delete request
+      await request(server).get(`/api/books/${lastId}`).expect(404); // Expect the book to not be found after deletion
     });
 
     test('Delete request can\'t be made to no specific id', async () => {
       await request(server)
         .delete('/api/books')
+        .expect(404); // Expect error status code
+    });
+
+    test('Delete request can\'t be made to an inexistent id', async () => {
+      await request(server)
+        .delete('/api/books/0') // The first book inserted into the database receives id = 1, so there is no book with id = 0
         .expect(404); // Expect error status code
     });
   });

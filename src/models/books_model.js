@@ -1,12 +1,16 @@
 const books = require('./books_mongo');
 
+async function getLatestBook() {
+  return await books.findOne({}, {'_id': 0, '__v': 0}).sort('-id');
+}
+
 async function getLatestId() {
-  const latestBook = await books.findOne().sort('-id');
+  const latestBook = await getLatestBook();
 
   if(!latestBook) {
     return 0;
   }
-
+  
   return latestBook.id;
 }
 
@@ -19,7 +23,8 @@ async function getBook(bookId) {
 }
 
 async function deleteBook(bookId) {
-  return await books.deleteOne({id: bookId});
+  const metaData = await books.deleteOne({id: bookId});
+  return metaData.deletedCount;
 }
 
 async function postBook(bookData) {
@@ -38,5 +43,7 @@ module.exports = {
   getBook,
   deleteBook,
   postBook,
-  updateBook
+  updateBook,
+  getLatestBook,
+  getLatestId
 };

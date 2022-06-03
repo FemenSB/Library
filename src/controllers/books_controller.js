@@ -89,10 +89,20 @@ async function httpGetBook(req, res) { // Specific id requested
   res.status(404).send({error: 'Id not found!'}); // If function execution didn't stop, the book was not found
 }
 
+async function httpGetLatestBook(req, res) {
+  const latestBook = await booksModel.getLatestBook();
+  if(!latestBook) {
+    res.status(200).send({message: 'No books registered'});
+    return;
+  }
+  res.status(200).send(latestBook);
+}
+
 module.exports = {
   httpPostBook,
   httpPutBook,
   httpDeleteBook,
   httpGetAllBooks,
-  httpGetBook
+  httpGetBook,
+  httpGetLatestBook
 };
