@@ -15,7 +15,11 @@ const bookSchema = new mongoose.Schema({
   },
   releaseDate: {
     type: Date,
-    required: true}
+    required: true},
+    rating: {
+      type: Number,
+      required: true,
+    }
 });
 
 module.exports = mongoose.model('Book', bookSchema);

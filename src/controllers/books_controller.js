@@ -10,7 +10,7 @@ function hasFields(obj, fields) { // Checks if the given object has the specifie
 
 async function httpPostBook(req, res) {
 
-  if(!hasFields(req.body, ['title', 'author', 'releaseDate'])) { // Check for missing fields in the request
+  if(!hasFields(req.body, ['title', 'author', 'releaseDate', 'rating'])) { // Check for missing fields in the request
     res.status(400).send({error: 'Data missing!'});
     return;
   }
@@ -21,10 +21,17 @@ async function httpPostBook(req, res) {
     return;
   }
 
+  let rating = Number(req.body.rating);
+  if(isNaN(rating)) {
+    res.status(400).send({error: 'Invalid rating!'});
+    return;
+  }
+
   let newBook = {
     title: req.body.title,
     author: req.body.author,
-    releaseDate: releaseDate
+    releaseDate: releaseDate,
+    rating: rating
   };
   res.status(201).send(await booksModel.postBook(newBook));
 }
@@ -59,6 +66,15 @@ async function httpPutBook(req, res) {
       return;
     }
     book.releaseDate = releaseDate; // If a date was received and it is valid, update the stored date
+  }
+
+  if(req.body.rating) { // Check if a new rating was set
+    let rating = Number(req.body.rating);
+    if(isNaN(rating)) {
+      res.status(400).send({error: 'Invalid rating!'});
+      return;
+    }
+    book.rating = rating; // If a rating was received and it is valid, update the stored rating
   }
 
   // Send the updated object to be stored by the model

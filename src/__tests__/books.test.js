@@ -32,7 +32,8 @@ describe('Books API', () => {
         .send({
           title: 'Valid book!',
           author: 'Its author!',
-          releaseDate: new Date('January 1, 2001')})
+          releaseDate: new Date('January 1, 2001'),
+          rating: '2.75'})
         .expect(201); // Expect response status 201
 
       expect(response.body).toMatchObject({
@@ -47,7 +48,8 @@ describe('Books API', () => {
         .post('/api/books')
         .send({
           title: 'Invalid book',
-          releaseDate: new Date('January 1, 2001')})
+          releaseDate: new Date('January 1, 2001'),
+          rating: '2.0'})
         .expect(400); // Expect response status to be 400
 
         expect(response.body).toStrictEqual({error: 'Data missing!'}); // Check if the correct error object is sent
@@ -59,7 +61,8 @@ describe('Books API', () => {
         .send({
           title: '',
           author: 'Author name',
-          releaseDate: new Date('January 1, 2001')})
+          releaseDate: new Date('January 1, 2001'),
+          rating: '1.0'})
         .expect(400); // Expect response status to be 400
 
         expect(response.body).toStrictEqual({error: 'Data missing!'}); // Check if the correct error object is sent
@@ -71,7 +74,8 @@ describe('Books API', () => {
         .send({
           title: 'Invalid book',
           author: 'Its author',
-          releaseDate: 'Surely not a date'})
+          releaseDate: 'Surely not a date',
+          rating: '1.5'})
         .expect(400); // Expect response status to be 400
 
         expect(response.body).toStrictEqual({error: 'Invalid release date!'}); // Check if the correct error object is sent
